@@ -1,16 +1,23 @@
 # Malicious URL Detection with ML and Deep Learning
 
-A multi-class classifier for malicious URLs on the ISCX-URL2016 dataset. Each URL is
-classified as benign, phishing, malware, defacement or spam from its pre-extracted lexical
-features.
+**Ten models compared on one question: which classifier best spots malicious URLs (phishing, malware, defacement, spam) from their lexical features? A tuned XGBoost wins with 98.6% accuracy and a 0.35% false-alarm rate.**
 
-The notebook builds and compares seven models, from simple linear baselines to gradient
-boosting and neural networks, then studies feature selection and hyperparameter tuning.
+Built on the ISCX-URL2016 dataset (36,707 URLs, 79 features). This is the baseline study; the follow-up stacked ensemble is [H-GATE](https://github.com/Inesaini/hgate-malicious-url-detection).
+
+**Stack:** Python · scikit-learn · XGBoost · TensorFlow / Keras · pandas · Seaborn
 
 ## Results
 
 Stratified 80/20 split (29,365 URLs for training, 7,342 for testing), macro-averaged metrics
 on the test set:
+
+```mermaid
+xychart-beta
+    title "Test accuracy (%) by model"
+    x-axis ["Naive Bayes", "Linear SVM", "Log. Reg.", "MLP", "DNN", "XGB PCA-20", "Random Forest", "XGB top-25", "XGBoost", "XGB tuned"]
+    y-axis "accuracy (%)" 50 --> 100
+    bar [57.12, 83.91, 85.43, 95.30, 95.56, 96.38, 97.71, 98.26, 98.56, 98.60]
+```
 
 | Model | Accuracy | Macro F1 | Macro FPR | Macro AUC |
 |---|---|---|---|---|
@@ -35,6 +42,11 @@ Per-class results for the tuned XGBoost (`learning_rate=0.05`, `max_depth=8`,
 | Malware | 0.9903 | 0.9866 | 0.9884 |
 | Phishing | 0.9646 | 0.9710 | 0.9678 |
 | Spam | 0.9947 | 0.9851 | 0.9899 |
+
+<p align="center">
+  <img src="figures/confusion_matrix_xgboost.png" width="49%" alt="Confusion matrix, tuned XGBoost">
+  <img src="figures/feature_importance.png" width="40%" alt="Top 20 features, Random Forest">
+</p>
 
 Tree ensembles clearly beat the other models on these lexical features, and tuning only adds
 a little over the default XGBoost. Keeping 25 of the 79 features costs about 0.3 points of
@@ -64,12 +76,13 @@ are close in size (6,698 to 7,930 URLs), and the models still use balanced class
 macro False Positive Rate is reported next to accuracy because a false positive means
 blocking a legitimate site.
 
-## What the notebook covers
+<details>
+<summary>What the notebook covers</summary>
 
-1. **Data loading and cleaning** — label column detection, handling of NaN and infinite
+1. **Data loading and cleaning:** label column detection, handling of NaN and infinite
    values
 2. **Label encoding and stratified 80/20 split**
-3. **Evaluation utilities** — accuracy, precision, recall, F1, ROC-AUC and False Positive
+3. **Evaluation utilities:** accuracy, precision, recall, F1, ROC-AUC and False Positive
    Rate per model
 4. **Machine learning models**, with balanced class weights (except Naive Bayes, which has
    no such option) to keep the False Positive Rate low on every class
@@ -81,16 +94,19 @@ blocking a legitimate site.
 5. **Deep learning models** (TensorFlow / Keras)
    - MLP
    - Deeper DNN with batch normalization
-6. **Feature selection** — Random Forest importance (top-K features) and PCA
-7. **Hyperparameter tuning** — GridSearchCV on XGBoost
+6. **Feature selection:** Random Forest importance (top-K features) and PCA
+7. **Hyperparameter tuning:** GridSearchCV on XGBoost
 8. **Final model comparison**
 9. **Saving the model and running inference** on a sample from the test set
+
+</details>
 
 ## Repository contents
 
 | File | Description |
 |---|---|
 | `malicious_url_detection.ipynb` | The notebook, with outputs and figures |
+| `figures/` | Figures used in this README, exported from the notebook |
 | `requirements.txt` | Python dependencies |
 
 ## Dataset
@@ -111,10 +127,6 @@ Locally: place `All.csv` next to the notebook, then
 pip install -r requirements.txt
 jupyter notebook malicious_url_detection.ipynb
 ```
-
-## Tech stack
-
-Python, scikit-learn, XGBoost, TensorFlow / Keras, pandas, NumPy, Matplotlib, Seaborn.
 
 ## About the project
 
