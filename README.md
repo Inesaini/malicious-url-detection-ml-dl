@@ -12,9 +12,10 @@ Stratified 80/20 split (29,365 URLs for training, 7,342 for testing), macro-aver
 on the test set:
 
 ```mermaid
-xychart-beta
+%%{init: {"themeVariables": {"xyChart": {"plotColorPalette": "#2f6fdf"}}}}%%
+xychart-beta horizontal
     title "Test accuracy (%) by model"
-    x-axis ["Naive Bayes", "Linear SVM", "Log. Reg.", "MLP", "DNN", "XGB PCA-20", "Random Forest", "XGB top-25", "XGBoost", "XGB tuned"]
+    x-axis ["Naive Bayes", "Linear SVM", "Logistic Regression", "MLP", "DNN", "XGBoost PCA-20", "Random Forest", "XGBoost top-25", "XGBoost", "XGBoost tuned"]
     y-axis "accuracy (%)" 50 --> 100
     bar [57.12, 83.91, 85.43, 95.30, 95.56, 96.38, 97.71, 98.26, 98.56, 98.60]
 ```
